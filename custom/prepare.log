@@ -1,7 +1,7 @@
 fatal: destination path 'wine-git' already exists and is not an empty directory.
 fatal: destination path 'wine-staging-git' already exists and is not an empty directory.
 HEAD is now at 7ba8823e Release v9.22
-HEAD is now at 61615f45219 mshtml: Make ProgressEvent constructor only available in IE10+ modes.
+HEAD is now at 33c16a81253 oleaut32: Remove unneeded null checks.
 
 CSMT-toggle.patch -- ( Applied CSMT toggle logic patch )
 patching file patches/winecfg-Staging/0006-winecfg-Toggle-upstream-CSMT-implementation.patch
