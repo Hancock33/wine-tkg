@@ -1,7 +1,7 @@
 fatal: destination path 'wine-git' already exists and is not an empty directory.
 fatal: destination path 'wine-staging-git' already exists and is not an empty directory.
 HEAD is now at 891daebf Rebase against 96a94318125332cd7aa80c475b35e38439b7c2b3.
-HEAD is now at 96a94318125 win32u: Allow unsetting the user driver.
+HEAD is now at de071d76c45 ntdll: Add NtFlushBuffersFileEx() semi-stub.
 
 CSMT-toggle.patch -- ( Applied CSMT toggle logic patch )
 patching file patches/winecfg-Staging/0006-winecfg-Toggle-upstream-CSMT-implementation.patch
@@ -601,8 +601,8 @@ Hunk #3 succeeded at 1005 (offset 1 line).
 patching file dlls/ntdll/unix/file.c
 Hunk #1 succeeded at 6603 (offset 1240 lines).
 Hunk #2 succeeded at 6868 (offset 1240 lines).
-Hunk #3 succeeded at 7708 (offset 654 lines).
-Hunk #4 succeeded at 7736 (offset 654 lines).
+Hunk #3 succeeded at 7722 (offset 668 lines).
+Hunk #4 succeeded at 7750 (offset 668 lines).
 patching file dlls/ntdll/unix/fsync.c
 Hunk #3 succeeded at 57 (offset -1 lines).
 Hunk #4 succeeded at 141 (offset -1 lines).
@@ -633,7 +633,7 @@ Hunk #1 succeeded at 41 with fuzz 2 (offset -3 lines).
 Hunk #2 succeeded at 427 (offset -119 lines).
 Hunk #3 succeeded at 469 (offset -121 lines).
 patching file dlls/ntdll/ntdll.spec
-Hunk #1 succeeded at 1750 (offset 125 lines).
+Hunk #1 succeeded at 1752 (offset 127 lines).
 patching file dlls/ntdll/unix/server.c
 Hunk #1 succeeded at 1725 (offset 254 lines).
 patching file dlls/ntdll/unix/unix_private.h
@@ -643,7 +643,7 @@ Hunk #1 succeeded at 3438 with fuzz 1 (offset 18 lines).
 patching file dlls/ntdll/loader.c
 Hunk #1 succeeded at 3490 (offset 15 lines).
 patching file dlls/ntdll/ntdll.spec
-Hunk #1 succeeded at 1751 (offset 37 lines).
+Hunk #1 succeeded at 1753 (offset 39 lines).
 patching file dlls/ntdll/unix/loader.c
 Hunk #1 succeeded at 1013 (offset -1091 lines).
 patching file dlls/ntdll/unix/unix_private.h
