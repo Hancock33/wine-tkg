@@ -1267,6 +1267,21 @@ static void handle_net_wm_state_notify( HWND hwnd, XPropertyEvent *event )
     NtUserPostMessage( hwnd, WM_WINE_WINDOW_STATE_CHANGED, 0, 0 );
 }
 
+static void handle_net_supported_notify( XPropertyEvent *event )
+{
+    struct x11drv_thread_data *data = x11drv_thread_data();
+
+    if (data->net_supported)
+    {
+        data->net_supported_count = 0;
+        XFree( data->net_supported );
+        data->net_supported = NULL;
+        data->net_wm_state_mask = 0;
+    }
+
+    if (event->state == PropertyNewValue) net_supported_init( data );
+}
+
 /***********************************************************************
  *           X11DRV_PropertyNotify
  */
@@ -1278,6 +1293,8 @@ static BOOL X11DRV_PropertyNotify( HWND hwnd, XEvent *xev )
     if (event->atom == x11drv_atom(WM_STATE)) handle_wm_state_notify( hwnd, event );
     if (event->atom == x11drv_atom(_XEMBED_INFO)) handle_xembed_info_notify( hwnd, event );
     if (event->atom == x11drv_atom(_NET_WM_STATE)) handle_net_wm_state_notify( hwnd, event );
+    if (event->atom == x11drv_atom(_NET_SUPPORTED)) handle_net_supported_notify( event );
+
     return TRUE;
 }
 

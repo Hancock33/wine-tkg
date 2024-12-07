@@ -486,12 +486,13 @@ static int get_window_attributes( struct x11drv_win_data *data, XSetWindowAttrib
     attr->bit_gravity       = NorthWestGravity;
     attr->backing_store     = NotUseful;
     attr->border_pixel      = 0;
+    attr->background_pixel  = 0;
     attr->event_mask        = (ExposureMask | PointerMotionMask |
                                ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
                                KeyPressMask | KeyReleaseMask | FocusChangeMask |
                                KeymapStateMask | StructureNotifyMask | PropertyChangeMask);
 
-    return (CWOverrideRedirect | CWSaveUnder | CWColormap | CWBorderPixel |
+    return (CWOverrideRedirect | CWSaveUnder | CWColormap | CWBorderPixel | CWBackPixel |
             CWEventMask | CWBitGravity | CWBackingStore);
 }
 
@@ -1229,6 +1230,7 @@ static void window_set_net_wm_state( struct x11drv_win_data *data, UINT new_stat
 {
     UINT i, count, old_state = data->pending_state.net_wm_state;
 
+    new_state &= x11drv_thread_data()->net_wm_state_mask;
     data->desired_state.net_wm_state = new_state;
     if (!data->whole_window) return; /* no window, nothing to update */
     if (data->wm_state_serial) return; /* another WM_STATE update is pending, wait for it to complete */
@@ -1530,7 +1532,7 @@ static void unmap_window( HWND hwnd )
 
 static UINT window_update_client_state( struct x11drv_win_data *data )
 {
-    UINT old_style = NtUserGetWindowLongW( data->hwnd, GWL_STYLE );
+    UINT old_style = NtUserGetWindowLongW( data->hwnd, GWL_STYLE ), new_style;
 
     if (!data->managed) return 0; /* unmanaged windows are managed by the Win32 side */
     if (data->desired_state.wm_state == WithdrawnState) return 0; /* ignore state changes on invisible windows */
@@ -1539,9 +1541,13 @@ static UINT window_update_client_state( struct x11drv_win_data *data )
     if (data->net_wm_state_serial) return 0; /* another _NET_WM_STATE update is pending, wait for it to complete */
     if (data->configure_serial) return 0; /* another config update is pending, wait for it to complete */
 
-    switch (MAKELONG(data->desired_state.wm_state, data->current_state.wm_state))
+    new_style = old_style & ~(WS_VISIBLE | WS_MINIMIZE | WS_MAXIMIZE);
+    if (data->current_state.wm_state != WithdrawnState) new_style |= WS_VISIBLE;
+    if (data->current_state.wm_state == IconicState) new_style |= WS_MINIMIZE;
+    if (data->current_state.net_wm_state & (1 << NET_WM_STATE_MAXIMIZED)) new_style |= WS_MAXIMIZE;
+
+    if ((old_style & WS_MINIMIZE) && !(new_style & WS_MINIMIZE))
     {
-    case MAKELONG(IconicState, NormalState):
         if ((old_style & WS_CAPTION) == WS_CAPTION && (data->current_state.net_wm_state & (1 << NET_WM_STATE_MAXIMIZED)))
         {
             if ((old_style & WS_MAXIMIZEBOX) && !(old_style & WS_DISABLED))
@@ -1556,14 +1562,14 @@ static UINT window_update_client_state( struct x11drv_win_data *data )
             TRACE( "restoring win %p/%lx\n", data->hwnd, data->whole_window );
             return MAKELONG(SC_RESTORE, activate);
         }
-        break;
-    case MAKELONG(NormalState, IconicState):
+    }
+    if (!(old_style & WS_MINIMIZE) && (new_style & WS_MINIMIZE))
+    {
         if ((old_style & WS_MINIMIZEBOX) && !(old_style & WS_DISABLED))
         {
             TRACE( "minimizing win %p/%lx\n", data->hwnd, data->whole_window );
             return SC_MINIMIZE;
         }
-        break;
     }
 
     return 0;
@@ -1602,6 +1608,9 @@ static UINT window_update_client_config( struct x11drv_win_data *data )
     else OffsetRect( &rect, old_rect.left - new_rect.left, old_rect.top - new_rect.top );
     if (rect.right == old_rect.right && rect.bottom == old_rect.bottom) flags |= SWP_NOSIZE;
     else if (IsRectEmpty( &rect )) flags |= SWP_NOSIZE;
+
+    /* don't sync win32 position for offscreen windows */
+    if (!is_window_rect_mapped( &new_rect )) flags |= SWP_NOMOVE;
 
     if ((flags & (SWP_NOSIZE | SWP_NOMOVE)) == (SWP_NOSIZE | SWP_NOMOVE)) return 0;
 
@@ -2552,7 +2561,7 @@ void X11DRV_SystrayDockInit( HWND hwnd )
         sprintf( systray_buffer, "_NET_SYSTEM_TRAY_S%u", DefaultScreen( display ) );
         systray_atom = XInternAtom( display, systray_buffer, False );
     }
-    XSelectInput( display, root_window, StructureNotifyMask );
+    XSelectInput( display, root_window, StructureNotifyMask | PropertyChangeMask );
 }
 
 
@@ -3330,29 +3339,17 @@ LRESULT X11DRV_WindowMessage( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
 /***********************************************************************
  *              is_netwm_supported
  */
-static BOOL is_netwm_supported( Display *display, Atom atom )
+static BOOL is_netwm_supported( Atom atom )
 {
-    static Atom *net_supported;
-    static int net_supported_count = -1;
+    struct x11drv_thread_data *data = x11drv_thread_data();
+    BOOL supported;
     int i;
 
-    if (net_supported_count == -1)
-    {
-        Atom type;
-        int format;
-        unsigned long count, remaining;
+    for (i = 0; i < data->net_supported_count; i++)
+        if (data->net_supported[i] == atom) break;
+    supported = i < data->net_supported_count;
 
-        if (!XGetWindowProperty( display, DefaultRootWindow(display), x11drv_atom(_NET_SUPPORTED), 0,
-                                 ~0UL, False, XA_ATOM, &type, &format, &count,
-                                 &remaining, (unsigned char **)&net_supported ))
-            net_supported_count = get_property_size( format, count ) / sizeof(Atom);
-        else
-            net_supported_count = 0;
-    }
-
-    for (i = 0; i < net_supported_count; i++)
-        if (net_supported[i] == atom) return TRUE;
-    return FALSE;
+    return supported;
 }
 
 
@@ -3434,7 +3431,7 @@ LRESULT X11DRV_SysCommand( HWND hwnd, WPARAM wparam, LPARAM lparam, const POINT 
 
     if (NtUserGetWindowLongW( hwnd, GWL_STYLE ) & WS_MAXIMIZE) goto failed;
 
-    if (!is_netwm_supported( data->display, x11drv_atom(_NET_WM_MOVERESIZE) ))
+    if (!is_netwm_supported( x11drv_atom(_NET_WM_MOVERESIZE) ))
     {
         TRACE( "_NET_WM_MOVERESIZE not supported\n" );
         goto failed;
@@ -3476,6 +3473,23 @@ void X11DRV_FlashWindowEx( FLASHWINFO *pfinfo )
                     SubstructureNotifyMask, &xev );
     }
     release_win_data( data );
+}
+
+void net_supported_init( struct x11drv_thread_data *data )
+{
+    unsigned long count, remaining;
+    int format, i;
+    Atom type;
+
+    if (!XGetWindowProperty( data->display, DefaultRootWindow( data->display ), x11drv_atom(_NET_SUPPORTED), 0, 65536 / sizeof(CARD32),
+                             False, XA_ATOM, &type, &format, &count, &remaining, (unsigned char **)&data->net_supported ))
+        data->net_supported_count = get_property_size( format, count ) / sizeof(Atom);
+
+    for (i = 0; i < NB_NET_WM_STATES; i++)
+    {
+        Atom atom = X11DRV_Atoms[net_wm_state_atoms[i] - FIRST_XATOM];
+        if (is_netwm_supported( atom )) data->net_wm_state_mask |= (1 << i);
+    }
 }
 
 void init_win_context(void)
