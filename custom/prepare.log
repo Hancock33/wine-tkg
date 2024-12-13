@@ -1,7 +1,7 @@
 fatal: destination path 'wine-git' already exists and is not an empty directory.
 fatal: destination path 'wine-staging-git' already exists and is not an empty directory.
-HEAD is now at 4f96088b Release v10.0-rc1
-HEAD is now at 4161e62e478 Release 10.0-rc1.
+HEAD is now at c8d46d4c Rebase against 448fcbc0c60d7228ed52f1f5d90f62be0a58289a.
+HEAD is now at 5bfbeb677f4 Release 10.0-rc2.
 
 CSMT-toggle.patch -- ( Applied CSMT toggle logic patch )
 patching file patches/winecfg-Staging/0006-winecfg-Toggle-upstream-CSMT-implementation.patch
@@ -517,7 +517,7 @@ Hunk #8 succeeded at 827 (offset 133 lines).
 patching file server/process.h
 Hunk #1 succeeded at 87 with fuzz 2 (offset -12 lines).
 patching file server/protocol.def
-Hunk #1 succeeded at 4146 (offset 380 lines).
+Hunk #1 succeeded at 4150 (offset 384 lines).
 patching file server/queue.c
 Hunk #1 succeeded at 45 (offset 1 line).
 Hunk #2 succeeded at 138 (offset -10 lines).
@@ -526,10 +526,10 @@ Hunk #4 succeeded at 174 (offset -10 lines).
 Hunk #5 succeeded at 213 (offset -10 lines).
 Hunk #6 succeeded at 328 (offset 1 line).
 Hunk #7 succeeded at 773 (offset 253 lines).
-Hunk #8 succeeded at 1267 (offset 283 lines).
-Hunk #9 succeeded at 1334 (offset 282 lines).
-Hunk #10 succeeded at 3208 (offset 164 lines).
-Hunk #11 succeeded at 4284 (offset 721 lines).
+Hunk #8 succeeded at 1268 (offset 284 lines).
+Hunk #9 succeeded at 1335 (offset 283 lines).
+Hunk #10 succeeded at 3209 (offset 165 lines).
+Hunk #11 succeeded at 4285 (offset 722 lines).
 patching file server/registry.c
 Hunk #1 succeeded at 181 (offset 13 lines).
 patching file server/request.c
@@ -581,8 +581,8 @@ Hunk #1 succeeded at 505 (offset -71 lines).
 patching file dlls/ntdll/unix/esync.c
 Hunk #1 succeeded at 529 (offset 3 lines).
 patching file server/queue.c
-Hunk #1 succeeded at 3185 (offset 185 lines).
-Hunk #2 succeeded at 3485 (offset 197 lines).
+Hunk #1 succeeded at 3186 (offset 186 lines).
+Hunk #2 succeeded at 3486 (offset 198 lines).
 patching file server/object.c
 Hunk #1 succeeded at 109 (offset -11 lines).
 Hunk #2 succeeded at 135 (offset -10 lines).
@@ -652,7 +652,7 @@ patching file dlls/ntdll/unixlib.h
 
 josh-flat-theme.patch -- ( Add Josh's better-theme )
 patching file dlls/win32u/sysparams.c
-Hunk #1 succeeded at 5167 (offset 3714 lines).
+Hunk #1 succeeded at 5200 (offset 3747 lines).
 patching file dlls/comctl32/tab.c
 Hunk #2 succeeded at 2124 (offset 7 lines).
 Hunk #3 succeeded at 2161 (offset 7 lines).
@@ -738,8 +738,8 @@ Hunk #1 succeeded at 2726 (offset 32 lines).
 Hunk #2 succeeded at 2766 (offset 32 lines).
 Hunk #3 succeeded at 2967 (offset 32 lines).
 Hunk #4 succeeded at 3032 (offset 32 lines).
-Hunk #5 succeeded at 3266 (offset 32 lines).
-Hunk #6 succeeded at 3317 (offset 32 lines).
+Hunk #5 succeeded at 3274 (offset 40 lines).
+Hunk #6 succeeded at 3337 (offset 52 lines).
 patching file dlls/win32u/ntuser_private.h
 Hunk #1 succeeded at 218 (offset -17 lines).
 
