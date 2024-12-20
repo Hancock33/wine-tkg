@@ -3000,6 +3000,8 @@ void X11DRV_WindowPosChanged( HWND hwnd, HWND insert_after, HWND owner_hint, UIN
     struct window_rects old_rects;
     BOOL was_fullscreen;
 
+    sync_gl_drawable( hwnd, FALSE );
+
     if (!(data = get_win_data( hwnd ))) return;
 
     old_style = new_style & ~(WS_VISIBLE | WS_MINIMIZE | WS_MAXIMIZE);
@@ -3018,7 +3020,6 @@ void X11DRV_WindowPosChanged( HWND hwnd, HWND insert_after, HWND owner_hint, UIN
     XFlush( gdi_display );  /* make sure painting is done before we move the window */
 
     sync_client_position( data, &old_rects );
-    sync_gl_drawable( hwnd, FALSE );
 
     if (!data->whole_window)
     {
