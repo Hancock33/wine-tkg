@@ -1,7 +1,7 @@
 fatal: destination path 'wine-git' already exists and is not an empty directory.
 fatal: destination path 'wine-staging-git' already exists and is not an empty directory.
 HEAD is now at f10d2d04 Release v10.0-rc3
-HEAD is now at d7a7cae2e2d Release 10.0-rc3.
+HEAD is now at 872f5c59d4b win32u: Check window state updates again after applying new state.
 
 CSMT-toggle.patch -- ( Applied CSMT toggle logic patch )
 patching file patches/winecfg-Staging/0006-winecfg-Toggle-upstream-CSMT-implementation.patch
@@ -733,12 +733,12 @@ Applying hotfix wine-tkg-patches/hotfixes/shm_esync_fsync/HACK-user32-Always-cal
 patching file dlls/win32u/input.c
 Hunk #1 succeeded at 799 (offset -5 lines).
 patching file dlls/win32u/message.c
-Hunk #1 succeeded at 2726 (offset 32 lines).
-Hunk #2 succeeded at 2766 (offset 32 lines).
-Hunk #3 succeeded at 2967 (offset 32 lines).
-Hunk #4 succeeded at 3032 (offset 32 lines).
-Hunk #5 succeeded at 3274 (offset 40 lines).
-Hunk #6 succeeded at 3337 (offset 52 lines).
+Hunk #1 succeeded at 2730 (offset 36 lines).
+Hunk #2 succeeded at 2770 (offset 36 lines).
+Hunk #3 succeeded at 2971 (offset 36 lines).
+Hunk #4 succeeded at 3036 (offset 36 lines).
+Hunk #5 succeeded at 3278 (offset 44 lines).
+Hunk #6 succeeded at 3341 (offset 56 lines).
 patching file dlls/win32u/ntuser_private.h
 Hunk #1 succeeded at 218 (offset -17 lines).
 
