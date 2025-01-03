@@ -1,7 +1,7 @@
 fatal: destination path 'wine-git' already exists and is not an empty directory.
 fatal: destination path 'wine-staging-git' already exists and is not an empty directory.
 HEAD is now at f10d2d04 Release v10.0-rc3
-HEAD is now at 1d401e1a395 user32/tests: Force window to be visible in subtest_swp_paint_regions.
+HEAD is now at 9008e655e4e Release 10.0-rc4.
 
 CSMT-toggle.patch -- ( Applied CSMT toggle logic patch )
 patching file patches/winecfg-Staging/0006-winecfg-Toggle-upstream-CSMT-implementation.patch
@@ -516,7 +516,7 @@ Hunk #8 succeeded at 827 (offset 133 lines).
 patching file server/process.h
 Hunk #1 succeeded at 87 with fuzz 2 (offset -12 lines).
 patching file server/protocol.def
-Hunk #1 succeeded at 4150 (offset 384 lines).
+Hunk #1 succeeded at 4149 (offset 383 lines).
 patching file server/queue.c
 Hunk #1 succeeded at 45 (offset 1 line).
 Hunk #2 succeeded at 138 (offset -10 lines).
