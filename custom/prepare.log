@@ -1,6 +1,6 @@
 fatal: destination path 'wine-git' already exists and is not an empty directory.
 fatal: destination path 'wine-staging-git' already exists and is not an empty directory.
-HEAD is now at f10d2d04 Release v10.0-rc3
+HEAD is now at c263c6fa Release v10.0-rc4
 HEAD is now at 9008e655e4e Release 10.0-rc4.
 
 CSMT-toggle.patch -- ( Applied CSMT toggle logic patch )
